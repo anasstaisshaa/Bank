@@ -1,25 +1,31 @@
 package AnastasiiaTkachuk;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Bank {
-    public void OpenAccount(User user, String pin){
+    private List<User> list;
+    public void openAccount(User user, String pin){
         System.out.println("Verify your pin");
-        if(user.getPin().equals(pin))
+        if(user.getPin().equals(pin)) {
             user.setAccountStatus(true);
+            list.add(user);
+        }
         else{
             System.out.println("PIN is incorrect, please try again.");
         }
     }
-    public void CloseAccount(User user, String pin){
+    public void closeAccount(User user, String pin){
         System.out.println("Verify your pin");
-        if(user.getPin().equals(pin))
+        if(user.getPin().equals(pin)) {
             user.setAccountStatus(false);
+            list.remove(user);
+        }
         else{
             System.out.println("PIN is incorrect, please try again.");
         }
     }
-    public void ChangePin(User user, String pin){
+    public void changePin(User user, String pin){
         System.out.println("Verify your pin");
         if(user.getPin().equals(pin)){
             System.out.println("Enter your new pin");
@@ -27,22 +33,6 @@ public class Bank {
             if(pinResult){
                 user.setPin(pin);
             }
-        }
-    }
-    public void TransferBetweenAccount(User accountFrom, User accountTo, double money){
-        if(accountFrom.isAccountStatus() && accountTo.isAccountStatus()){
-            if(accountFrom.getBalance() >= money){
-                accountFrom.setBalance(accountFrom.getBalance()-money);
-                accountTo.setBalance(accountTo.getBalance()-money);
-                LocalDateTime dateTime = LocalDateTime.now();
-                new Transaction(dateTime, money).setList(new Transaction(dateTime, money));
-            }
-            else{
-                System.out.println("You don't have enough money");
-            }
-        }
-        else {
-            System.out.println("Your accounts are not open");
         }
     }
 }

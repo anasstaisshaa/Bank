@@ -6,10 +6,11 @@ public class User {
 
     private double balance;
     private boolean AccountStatus = false;
-    public User(String  pin, String fullName) {
+
+    public User(String pin, String fullName) {
         System.out.println("You have successfully registered to make bank transactions open an account");
         boolean pinResult = pin.matches("#^[0-9]{4}$#");
-        if(pinResult) {
+        if (pinResult) {
             this.pin = pin;
         }
         this.fullName = fullName;
