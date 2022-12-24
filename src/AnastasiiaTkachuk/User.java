@@ -3,15 +3,18 @@ package AnastasiiaTkachuk;
 public class User {
     private String pin;
     private final String fullName;
+    private String login;
 
     private double balance;
     private boolean AccountStatus = false;
 
-    public User(String pin, String fullName) {
-        System.out.println("You have successfully registered to make bank transactions open an account");
+    public User(String pin, String fullName, String login) {
         boolean pinResult = pin.matches("#^[0-9]{4}$#");
-        if (pinResult) {
+        boolean loginResult = login.matches("#^[0-9a-zA-Z]{24}$#");
+        if (pinResult && loginResult) {
             this.pin = pin;
+            this.login = login;
+            System.out.println("You have successfully registered to make bank transactions open an account");
         }
         this.fullName = fullName;
     }
@@ -42,6 +45,14 @@ public class User {
 
     public void setPin(String pin) {
         this.pin = pin;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getLogin() {
+        return login;
     }
 
     @Override
