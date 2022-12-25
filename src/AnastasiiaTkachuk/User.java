@@ -9,17 +9,19 @@ public class User {
     private boolean AccountStatus = false;
 
     public User(String pin, String fullName, String login) {
-        boolean pinResult = pin.matches("#^[0-9]{4}$#");
-        boolean loginResult = login.matches("#^[0-9a-zA-Z]{24}$#");
+        boolean pinResult = pin.matches("^[0-9]{4}$");
+        boolean loginResult = login.matches("^[0-9a-zA-Z]{4,24}$");
         if (pinResult && loginResult) {
             this.pin = pin;
             this.login = login;
-            System.out.println("You have successfully registered to make bank transactions open an account");
+            this.fullName = fullName;
+            System.out.printf("You have successfully registered user %s to make bank transactions. Now please open an account%n", fullName);
+        } else {
+            throw new RuntimeException("PIN or LOGIN are not acceptable. Please use correct format for PIN or LOGIN");
         }
-        this.fullName = fullName;
     }
 
-    public boolean isAccountStatus() {
+    public boolean isAccountEnabled() {
         return AccountStatus;
     }
 
@@ -58,7 +60,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "pin='" + pin + '\'' +
+//                "pin='" + pin + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", balance=" + balance +
                 ", AccountStatus=" + AccountStatus +

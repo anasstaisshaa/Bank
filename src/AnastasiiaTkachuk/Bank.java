@@ -1,18 +1,19 @@
 package AnastasiiaTkachuk;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bank {
-    private List<User> list;
+    private List<User> list = new ArrayList<>();
 
     public void openAccount(User user, String pin) {
-        System.out.println("Verify your pin");
+        System.out.printf("Verifying pin of user %s%n", user.getFullName());
         if (user.getPin().equals(pin)) {
             user.setAccountStatus(true);
             list.add(user);
         } else {
-            System.out.println("PIN is incorrect, please try again.");
+            System.out.printf("PIN for user %s is incorrect, please try again.%n", user.getFullName());
         }
     }
 
@@ -41,7 +42,7 @@ public class Bank {
         System.out.println("Verify your pin");
         if (user.getPin().equals(pin)) {
             System.out.println("Enter your new login");
-            boolean loginResult = login.matches("#^[0-9a-zA-Z]{24}$#");
+            boolean loginResult = login.matches("^[0-9a-zA-Z]{4,24}$");
             if (loginResult) {
                 user.setLogin(login);
             }

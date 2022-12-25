@@ -1,27 +1,37 @@
 package AnastasiiaTkachuk;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ATM {
-    private List<Transaction> list;
+    private List<Transaction> list = new ArrayList<>();
 
     public void transferBetweenAccount(User accountFrom, User accountTo, double money) {
-        if (accountFrom.isAccountStatus() && accountTo.isAccountStatus()) {
+        if (accountFrom.isAccountEnabled() && accountTo.isAccountEnabled()) {
             if (accountFrom.getBalance() >= money) {
+                double initialBalanceCreditAccount = accountFrom.getBalance();
+                double initialBalanceDebitAccount = accountTo.getBalance();
                 accountFrom.setBalance(accountFrom.getBalance() - money);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 accountTo.setBalance(accountTo.getBalance() + money);
-                LocalDateTime dateTime = LocalDateTime.now();
-                list.add(new Transaction(dateTime, money));
+                ZonedDateTime dateTime = ZonedDateTime.now();
+                list.add(new Transaction(dateTime, accountFrom, money, "-", initialBalanceCreditAccount, accountFrom.getBalance()));
+                list.add(new Transaction(dateTime, accountTo, money, "+", initialBalanceDebitAccount, accountTo.getBalance()));
+                System.out.printf("User %s sent to user %s %s money.%n", accountFrom.getFullName(), accountTo.getFullName(), money);
             } else {
-                System.out.println("You don't have enough money");
+                System.out.printf("User %s don't have enough money. Transaction cancelled.%n", accountFrom.getFullName());
             }
         } else {
-            System.out.println("Your account is not open");
+            System.out.printf("User %s account is not open. Please open it before making any transactions.%n", accountFrom.getFullName());
         }
     }
 
-    public List getHistoryOfTransaction() {
+    public List<Transaction> getHistoryOfTransaction() {
         return list;
     }
 
@@ -29,28 +39,31 @@ public class ATM {
         return user.getBalance();
     }
 
-    public void serAmount(User user, double money) {
-        if (user.isAccountStatus()) {
+    public void addToBalance(User user, double money) {
+        if (user.isAccountEnabled()) {
+            double initialBalance = user.getBalance();
             user.setBalance(user.getBalance() + money);
-            LocalDateTime dateTime = LocalDateTime.now();
-            list.add(new Transaction(dateTime, money));
+            ZonedDateTime dateTime = ZonedDateTime.now();
+            list.add(new Transaction(dateTime, user, money, "+", initialBalance, user.getBalance()));
+            System.out.printf("User %s topped up their account with %s%n", user.getFullName(), money);
         } else {
             System.out.println("Your account is not open");
         }
     }
 
     public void withdraw(User user, double money) {
-        if (user.isAccountStatus()) {
+        if (user.isAccountEnabled()) {
             if (user.getBalance() >= money) {
+                double initialBalance = user.getBalance();
                 user.setBalance(user.getBalance() - money);
-                LocalDateTime dateTime = LocalDateTime.now();
-                list.add(new Transaction(dateTime, money));
+                ZonedDateTime dateTime = ZonedDateTime.now();
+                list.add(new Transaction(dateTime, user, money, "w-", initialBalance, user.getBalance()));
+                System.out.printf("User %s withdrawn %s%n", user.getFullName(), money);
             } else {
-                System.out.println("You don't have enough money");
+                System.out.printf("User %s don't have enough money%n", user.getFullName());
             }
         } else {
             System.out.println("Your account is not open");
         }
     }
-
 }
