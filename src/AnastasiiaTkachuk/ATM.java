@@ -3,32 +3,29 @@ package AnastasiiaTkachuk;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ATM {
     private List<Transaction> list = new ArrayList<>();
 
     public void transferBetweenAccount(User accountFrom, User accountTo, double money) {
-        if (accountFrom.isAccountEnabled() && accountTo.isAccountEnabled()) {
-            if (accountFrom.getBalance() >= money) {
-                double initialBalanceCreditAccount = accountFrom.getBalance();
-                double initialBalanceDebitAccount = accountTo.getBalance();
-                accountFrom.setBalance(accountFrom.getBalance() - money);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            if (accountFrom.isAccountEnabled() && accountTo.isAccountEnabled()) {
+                if (accountFrom.getBalance() >= money) {
+                    double initialBalanceCreditAccount = accountFrom.getBalance();
+                    double initialBalanceDebitAccount = accountTo.getBalance();
+                    accountFrom.setBalance(accountFrom.getBalance() - money);
+                    accountTo.setBalance(accountTo.getBalance() + money);
+                    ZonedDateTime dateTime = ZonedDateTime.now();
+                    list.add(new Transaction(dateTime, accountFrom, money, "-", initialBalanceCreditAccount, accountFrom.getBalance()));
+                    list.add(new Transaction(dateTime, accountTo, money, "+", initialBalanceDebitAccount, accountTo.getBalance()));
+                    System.out.printf("User %s sent to user %s %s money.%n", accountFrom.getFullName(), accountTo.getFullName(), money);
+                } else {
+                    System.out.printf("User %s don't have enough money. Transaction cancelled.%n", accountFrom.getFullName());
                 }
-                accountTo.setBalance(accountTo.getBalance() + money);
-                ZonedDateTime dateTime = ZonedDateTime.now();
-                list.add(new Transaction(dateTime, accountFrom, money, "-", initialBalanceCreditAccount, accountFrom.getBalance()));
-                list.add(new Transaction(dateTime, accountTo, money, "+", initialBalanceDebitAccount, accountTo.getBalance()));
-                System.out.printf("User %s sent to user %s %s money.%n", accountFrom.getFullName(), accountTo.getFullName(), money);
             } else {
-                System.out.printf("User %s don't have enough money. Transaction cancelled.%n", accountFrom.getFullName());
+                System.out.printf("User %s account is not open. Please open it before making any transactions.%n", accountFrom.getFullName());
             }
-        } else {
-            System.out.printf("User %s account is not open. Please open it before making any transactions.%n", accountFrom.getFullName());
-        }
     }
 
     public List<Transaction> getHistoryOfTransaction() {
@@ -66,4 +63,5 @@ public class ATM {
             System.out.println("Your account is not open");
         }
     }
+
 }

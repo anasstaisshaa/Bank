@@ -1,5 +1,8 @@
 package AnastasiiaTkachuk;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class User {
     private String pin;
     private final String fullName;
@@ -7,6 +10,7 @@ public class User {
 
     private double balance;
     private boolean AccountStatus = false;
+    private final Lock lock = new ReentrantLock();
 
     public User(String pin, String fullName, String login) {
         boolean pinResult = pin.matches("^[0-9]{4}$");
@@ -55,6 +59,10 @@ public class User {
 
     public String getLogin() {
         return login;
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 
     @Override

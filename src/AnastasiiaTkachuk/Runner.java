@@ -64,14 +64,6 @@ public class Runner {
         System.out.printf("Withdrawn total %s%n", withdrawnAmount);
         System.out.printf("Total balance (u1 + u2 + w) is %s%n", user1.getBalance() + user2.getBalance() + withdrawnAmount);
 
-
-        /*
-        atm1.transferBetweenAccount(user1, user2, 50d);
-
-        atm1.withdraw(user1, 50d);
-        System.out.printf("User 1 balance = %s%n", user1.getBalance());
-        atm1.addToBalance(user1, 50d);
-*/
     }
 
     static class MoneyTaker1 extends Thread {
@@ -79,11 +71,13 @@ public class Runner {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                atm1.transferBetweenAccount(user2, user1, 200d);
-//                atm1.withdraw(user1, 100d);
-//                synchronized (withdrawnAmount) {
-//                    withdrawnAmount += 100d;
-//                }
+                lockAccount();
+                try {
+                    atm1.transferBetweenAccount(user2, user1, 200d);
+                }finally {
+                    user1.getLock().unlock();
+                    user2.getLock().unlock();
+                }
             }
         }
     }
@@ -93,11 +87,29 @@ public class Runner {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                atm1.transferBetweenAccount(user1, user2, 200d);
-//                atm1.withdraw(user1, 100d);
-//                synchronized (withdrawnAmount) {
-//                    withdrawnAmount += 100d;
-//                }
+                lockAccount();
+                try {
+                    atm1.transferBetweenAccount(user1, user2, 200d);
+                }finally {
+                    user1.getLock().unlock();
+                    user2.getLock().unlock();
+                }
+            }
+        }
+    }
+    public static void lockAccount(){
+        while(true) {
+
+            boolean fromLockResult = user1.getLock().tryLock();
+            boolean toLockResult = user2.getLock().tryLock();
+            if (fromLockResult && toLockResult) {
+                break;
+            }
+            if(fromLockResult){
+                user1.getLock().unlock();
+            }
+            if(toLockResult){
+                user2.getLock().unlock();
             }
         }
     }
