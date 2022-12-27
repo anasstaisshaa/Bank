@@ -21,8 +21,9 @@ public class ATM {
                         if(fromLockResult){
                             accountFrom.getLock().unlock();
                         }
-                        if(toLockResult){
+                        if(toLockResult) {
                             accountTo.getLock().unlock();
+                        }
                     }
                         try {
                             double initialBalanceCreditAccount = accountFrom.getBalance();
@@ -37,7 +38,7 @@ public class ATM {
                             accountFrom.getLock().unlock();
                             accountTo.getLock().unlock();
                         }
-                        }
+
                 } else {
                     System.out.printf("User %s don't have enough money. Transaction cancelled.%n", accountFrom.getFullName());
                 }
