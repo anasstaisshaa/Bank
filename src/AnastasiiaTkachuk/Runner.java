@@ -71,7 +71,6 @@ public class Runner {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                lockAccount();
                 try {
                     atm1.transferBetweenAccount(user2, user1, 200d);
                 }finally {
@@ -87,7 +86,6 @@ public class Runner {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                lockAccount();
                 try {
                     atm1.transferBetweenAccount(user1, user2, 200d);
                 }finally {
@@ -97,20 +95,5 @@ public class Runner {
             }
         }
     }
-    public static void lockAccount(){
-        while(true) {
 
-            boolean fromLockResult = user1.getLock().tryLock();
-            boolean toLockResult = user2.getLock().tryLock();
-            if (fromLockResult && toLockResult) {
-                break;
-            }
-            if(fromLockResult){
-                user1.getLock().unlock();
-            }
-            if(toLockResult){
-                user2.getLock().unlock();
-            }
-        }
-    }
 }
