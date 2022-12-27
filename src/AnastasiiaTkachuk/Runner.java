@@ -26,11 +26,6 @@ public class Runner {
         System.out.printf("User1 has balance %s%n", user1.getBalance());
         System.out.printf("User2 has balance %s%n", user2.getBalance());
 
-        MoneyTaker1 t1 = new MoneyTaker1();
-        MoneyTaker2 t2 = new MoneyTaker2();
-        t2.start();
-        t1.start();
-
         ExecutorService threadExecutor = Executors.newFixedThreadPool(3);
         threadExecutor.submit(() -> {
             for (int i = 0; i < 10; i++) {
@@ -55,8 +50,6 @@ public class Runner {
         threadExecutor.awaitTermination(3L, TimeUnit.SECONDS);
         threadExecutor.shutdown();
 
-        t1.join();
-        t2.join();
 
         System.out.printf("ATM1 history%n%s%n", atm1.getHistoryOfTransaction());
         System.out.printf("User1 has balance %s%n", user1.getBalance());
@@ -64,36 +57,6 @@ public class Runner {
         System.out.printf("Withdrawn total %s%n", withdrawnAmount);
         System.out.printf("Total balance (u1 + u2 + w) is %s%n", user1.getBalance() + user2.getBalance() + withdrawnAmount);
 
-    }
-
-    static class MoneyTaker1 extends Thread {
-
-        @Override
-        public void run() {
-            for (int i = 0; i < 10; i++) {
-                try {
-                    atm1.transferBetweenAccount(user2, user1, 200d);
-                }finally {
-                    user1.getLock().unlock();
-                    user2.getLock().unlock();
-                }
-            }
-        }
-    }
-
-    static class MoneyTaker2 extends Thread {
-
-        @Override
-        public void run() {
-            for (int i = 0; i < 10; i++) {
-                try {
-                    atm1.transferBetweenAccount(user1, user2, 200d);
-                }finally {
-                    user1.getLock().unlock();
-                    user2.getLock().unlock();
-                }
-            }
-        }
     }
 
 }
